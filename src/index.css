@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Coffee Colors */
+  --color-coffee-50: #fdf8f6;
+  --color-coffee-100: #f2e8e5;
+  --color-coffee-200: #eaddd7;
+  --color-coffee-300: #e0cec7;
+  --color-coffee-400: #d2bab0;
+  --color-coffee-500: #a77f71;
+  --color-coffee-600: #8a5a4c;
+  --color-coffee-700: #6f453b;
+  --color-coffee-800: #57332a;
+  --color-coffee-900: #3d211b;
+  --color-coffee-950: #2a1510;
+
+  /* Brand Colors (Formerly Neon) */
+  --color-neon-primary: #ea580c; /* Vibrant Orange */
+  --color-neon-secondary: #854d0e; /* Golden Brown */
+  --color-neon-accent: #fafaf9; /* Warm White */
+  --color-neon-dark: #1c1917; /* Dark Stone/Coffee */
+
+  /* Fonts */
+  --font-sans: 'Inter', sans-serif;
+
+  /* Animations */
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-spin-slow: spin 12s linear infinite;
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+  }
+
+  @keyframes gradient-x {
+    0% {
+      background-position: 0% 50%;
+    }
+    100% {
+      background-position: 200% 50%;
+    }
+  }
+
+  --animate-gradient-x: gradient-x 4s linear infinite;
+}
+
+/* Base Styles */
+@layer base {
+  body {
+    @apply bg-neon-dark text-neon-accent font-sans antialiased overflow-x-hidden transition-colors duration-500 ease-in-out;
+  }
+  
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Hide scrollbar for IE, Edge and Firefox */
+  html {
+    font-size: 90%;
+    scroll-behavior: smooth;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+}
