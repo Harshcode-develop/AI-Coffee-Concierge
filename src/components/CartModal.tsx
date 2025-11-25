@@ -113,7 +113,7 @@ export const CartModal: React.FC = () => {
                         
                         <div className="flex items-center justify-between mt-1">
                           <span className="font-bold text-neon-secondary text-base">${item.price.toFixed(2)}</span>
-                          <div className="flex items-center gap-2 bg-white dark:bg-black/20 rounded-lg p-1 border border-gray-100 dark:border-white/5">
+                          <div className="flex items-center gap-2 bg-white dark:bg-black/20 rounded-lg p-1 border border-gray-100 dark:border-white/5 text-gray-900 dark:text-white">
                             <button
                               onClick={() => updateQuantity(item.id, item.size, item.quantity - 1)}
                               className="p-1 hover:bg-gray-100 dark:hover:bg-white/10 rounded-md transition-colors"
