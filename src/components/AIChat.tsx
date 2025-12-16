@@ -51,7 +51,7 @@ export const AIChat: React.FC = () => {
   useEffect(() => {
     if (isOpen && messages.length === 1) {
       // Only speak if there's just the welcome message
-      const welcomeMessage = messages[0]?.content || "Hi! I'm Aurora, your personal AI guide.";
+      const welcomeMessage = messages[0]?.content || "Hi ! I'm Aurora, your AI Coffee Guide. Tell me what flavors you like, or ask for a recommendation based on your mood!";
       setTimeout(() => {
         speakResponse(welcomeMessage);
       }, 300); // Small delay for smooth UX
