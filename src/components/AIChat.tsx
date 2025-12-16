@@ -47,6 +47,17 @@ export const AIChat: React.FC = () => {
     scrollToBottom();
   }, [messages, isOpen, isTyping, suggestedItem]);
 
+  // Auto-speak welcome message when chat opens
+  useEffect(() => {
+    if (isOpen && messages.length === 1) {
+      // Only speak if there's just the welcome message
+      const welcomeMessage = messages[0]?.content || "Hi! I'm Aurora, your personal AI guide.";
+      setTimeout(() => {
+        speakResponse(welcomeMessage);
+      }, 300); // Small delay for smooth UX
+    }
+  }, [isOpen]);
+
   // Speech to Text
   const handleSpeechResult = (text: string) => {
     setInput(text);
@@ -79,7 +90,7 @@ export const AIChat: React.FC = () => {
     useChatStore.getState().clearChat();
     setSuggestedItem(null);
     // Speak the welcome message
-    speakResponse("Hi! I'm Aurora, your AI Coffee Guide. Tell me what flavors you like, or ask for a recommendation based on your mood!");
+    speakResponse("Hi ! I'm Aurora, your AI Coffee Guide. Tell me what flavors you like, or ask for a recommendation based on your mood!");
   };
 
   const handleSuggestionResponse = (response: 'yes' | 'no') => {

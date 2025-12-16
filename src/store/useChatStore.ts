@@ -17,7 +17,7 @@ export const useChatStore = create<ChatState>()(
         {
           id: 'welcome',
           role: 'assistant',
-          content: "Hi! I'm your AI Coffee Guide. Tell me what flavors you like, or ask for a recommendation based on your mood!",
+          content: "Hi! I'm Aurora, your personal AI guide.",
           timestamp: Date.now(),
         },
       ],
