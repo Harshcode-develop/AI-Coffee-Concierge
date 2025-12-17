@@ -45,7 +45,7 @@ export const useChatStore = create<ChatState>()(
       }),
     }),
     {
-      name: 'chat-storage',
+      name: 'chat-storage-v2',
     }
   )
 );
