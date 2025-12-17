@@ -35,14 +35,14 @@ export const Navbar: React.FC = () => {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         className={cn(
-          "fixed top-0 left-0 right-0 z-50 px-6 py-4 transition-all duration-300",
+          "fixed top-0 left-0 right-0 z-50 px-4 md:px-6 py-4 transition-all duration-300",
           isScrolled
             ? "bg-white/80 dark:bg-neon-dark/80 backdrop-blur-lg shadow-lg"
             : "bg-transparent"
         )}
       >
-        <div className="max-w-[90%] mx-auto flex items-center justify-between pl-21">
-          <div className="flex-1 flex items-center gap-4">
+        <div className="max-w-[90%] mx-auto flex items-center justify-between pl-0 md:pl-21">
+          <div className="flex-1 flex items-center gap-2 md:gap-4">
             {/* Logo */}
             <div
               className="flex items-center gap-2 cursor-pointer"
@@ -111,7 +111,7 @@ export const Navbar: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex-1 flex items-center justify-end gap-4 md:gap-6 pr-21">
+          <div className="flex-1 flex items-center justify-end gap-2 md:gap-6 pr-0 md:pr-21">
             {/* Mobile Search Toggle */}
             <button
               className="md:hidden p-2 text-gray-800 dark:text-neon-accent"
