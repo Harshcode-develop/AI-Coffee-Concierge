@@ -1,6 +1,6 @@
-import React from 'react';
-import { Navbar } from './Navbar';
-import { motion } from 'framer-motion';
+import React from "react";
+import { Navbar } from "./Navbar";
+import { motion } from "framer-motion";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -40,8 +40,8 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
       </div>
 
       <Navbar />
-      
-      <main className="relative z-10 pt-24 px-6 max-w-[90%] mx-auto pb-20">
+
+      <main className="relative z-10 pt-24 w-full px-4 md:px-6 md:max-w-[90%] mx-auto pb-20">
         {children}
       </main>
     </div>

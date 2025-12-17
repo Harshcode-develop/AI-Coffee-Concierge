@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { ShoppingBag, Coffee, Bot, Utensils, Search } from 'lucide-react';
-import { useCartStore } from '../store/useCartStore';
-import { useChatStore } from '../store/useChatStore';
-import { useProductStore } from '../store/useProductStore';
-import { ThemeToggle } from './ThemeToggle';
-import { MenuModal } from './MenuModal';
-import { motion, AnimatePresence } from 'framer-motion';
-import { cn } from '../lib/utils';
+import React, { useState, useEffect } from "react";
+import { ShoppingBag, Coffee, Bot, Utensils, Search } from "lucide-react";
+import { useCartStore } from "../store/useCartStore";
+import { useChatStore } from "../store/useChatStore";
+import { useProductStore } from "../store/useProductStore";
+import { ThemeToggle } from "./ThemeToggle";
+import { MenuModal } from "./MenuModal";
+import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "../lib/utils";
 
 export const Navbar: React.FC = () => {
   const items = useCartStore((state) => state.items);
@@ -14,9 +14,9 @@ export const Navbar: React.FC = () => {
   const toggleChat = useChatStore((state) => state.toggleChat);
   const searchQuery = useProductStore((state) => state.searchQuery);
   const setSearchQuery = useProductStore((state) => state.setSearchQuery);
-  
+
   const itemCount = items.reduce((acc, item) => acc + item.quantity, 0);
-  
+
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -25,8 +25,8 @@ export const Navbar: React.FC = () => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
@@ -36,38 +36,56 @@ export const Navbar: React.FC = () => {
         animate={{ y: 0 }}
         className={cn(
           "fixed top-0 left-0 right-0 z-50 px-6 py-4 transition-all duration-300",
-          isScrolled 
-            ? "bg-white/80 dark:bg-neon-dark/80 backdrop-blur-lg shadow-lg" 
+          isScrolled
+            ? "bg-white/80 dark:bg-neon-dark/80 backdrop-blur-lg shadow-lg"
             : "bg-transparent"
         )}
       >
         <div className="max-w-[90%] mx-auto flex items-center justify-between pl-21">
           <div className="flex-1 flex items-center gap-4">
             {/* Logo */}
-            <div 
+            <div
               className="flex items-center gap-2 cursor-pointer"
               onClick={() => {
-                setSearchQuery('');
-                useProductStore.getState().setSelectedCategory('All');
+                setSearchQuery("");
+                useProductStore.getState().setSelectedCategory("All");
               }}
             >
               <div className="relative">
-                <Coffee className="text-neon-primary dark:text-neon-secondary fill-neon-primary/80 dark:fill-neon-secondary/20" size={32} />
+                <Coffee
+                  className="text-neon-primary dark:text-neon-secondary fill-neon-primary/80 dark:fill-neon-secondary/20"
+                  size={32}
+                />
                 {/* Vapour Animations */}
                 <motion.div
                   className="absolute -top-2 left-1/2 -translate-x-1/2 w-1 h-3 bg-neon-primary/50 dark:bg-neon-secondary/50 rounded-full blur-[1px]"
                   animate={{ y: [-2, -10], opacity: [0, 1, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 0 }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: 0,
+                  }}
                 />
                 <motion.div
                   className="absolute -top-2 left-[30%] w-1 h-2 bg-neon-primary/40 dark:bg-neon-secondary/40 rounded-full blur-[1px]"
                   animate={{ y: [-2, -8], opacity: [0, 1, 0] }}
-                  transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                  transition={{
+                    duration: 2.5,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: 0.5,
+                  }}
                 />
                 <motion.div
                   className="absolute -top-2 right-[30%] w-1 h-2.5 bg-neon-primary/40 dark:bg-neon-secondary/40 rounded-full blur-[1px]"
                   animate={{ y: [-2, -9], opacity: [0, 1, 0] }}
-                  transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                  transition={{
+                    duration: 2.2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: 1,
+                  }}
                 />
               </div>
               <span className="text-2xl font-bold bg-linear-to-r from-neon-primary to-neon-secondary bg-clip-text text-transparent hidden md:block">
@@ -79,7 +97,10 @@ export const Navbar: React.FC = () => {
           {/* Search Bar */}
           <div className="hidden md:block w-full max-w-md mx-4">
             <div className="relative group">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-neon-primary transition-colors" size={20} />
+              <Search
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-neon-primary transition-colors"
+                size={20}
+              />
               <input
                 type="text"
                 value={searchQuery}
@@ -92,7 +113,7 @@ export const Navbar: React.FC = () => {
 
           <div className="flex-1 flex items-center justify-end gap-4 md:gap-6 pr-21">
             {/* Mobile Search Toggle */}
-            <button 
+            <button
               className="md:hidden p-2 text-gray-800 dark:text-neon-accent"
               onClick={() => setIsSearchOpen(!isSearchOpen)}
               aria-label="Toggle search"
@@ -101,7 +122,7 @@ export const Navbar: React.FC = () => {
             </button>
 
             <ThemeToggle />
-            
+
             <button
               onClick={toggleChat}
               className="p-2 text-gray-800 dark:text-neon-accent hover:text-neon-primary dark:hover:text-neon-secondary transition-colors"
@@ -137,13 +158,16 @@ export const Navbar: React.FC = () => {
           {isSearchOpen && (
             <motion.div
               initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
+              animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               className="md:hidden overflow-hidden"
             >
               <div className="pt-4 pb-2">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                  <Search
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                    size={20}
+                  />
                   <input
                     type="text"
                     value={searchQuery}
@@ -163,7 +187,7 @@ export const Navbar: React.FC = () => {
         onClick={() => setIsMenuOpen(true)}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
-        className="fixed bottom-6 right-51 z-50 px-6 py-3 bg-neon-primary/80 backdrop-blur-md text-white rounded-full shadow-lg hover:shadow-xl transition-shadow flex items-center gap-2"
+        className="fixed bottom-6 right-6 md:right-51 z-50 px-6 py-3 bg-neon-primary/80 backdrop-blur-md text-white rounded-full shadow-lg hover:shadow-xl transition-shadow flex items-center gap-2"
       >
         <Utensils size={20} />
         <span className="font-bold">Menu</span>

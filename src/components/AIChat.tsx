@@ -1,20 +1,20 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Send, X, Bot, Mic, Settings, Key, Trash2 } from 'lucide-react';
-import { useChatStore } from '../store/useChatStore';
-import { useCartStore } from '../store/useCartStore';
-import { useProductStore } from '../store/useProductStore';
-import { useSpeechToText } from '../hooks/useSpeechToText';
-import { chatWithGemini } from '../services/gemini';
-import { allProducts as products } from '../data/products';
+import React, { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Send, X, Bot, Mic, Settings, Key, Trash2 } from "lucide-react";
+import { useChatStore } from "../store/useChatStore";
+import { useCartStore } from "../store/useCartStore";
+import { useProductStore } from "../store/useProductStore";
+import { useSpeechToText } from "../hooks/useSpeechToText";
+import { chatWithGemini } from "../services/gemini";
+import { allProducts as products } from "../data/products";
 
 export const AIChat: React.FC = () => {
   const { messages, isOpen, toggleChat, addMessage } = useChatStore();
   const { items, addItem } = useCartStore();
   const setSearchQuery = useProductStore((state) => state.setSearchQuery);
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
-  const [apiKey, setApiKey] = useState('');
+  const [apiKey, setApiKey] = useState("");
   const [showSettings, setShowSettings] = useState(false);
   const [suggestedItem, setSuggestedItem] = useState<any>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -23,24 +23,24 @@ export const AIChat: React.FC = () => {
 
   // Load API key from local storage on mount
   useEffect(() => {
-    const storedKey = localStorage.getItem('gemini_api_key');
+    const storedKey = localStorage.getItem("gemini_api_key");
     if (storedKey) setApiKey(storedKey);
   }, []);
 
   const saveApiKey = (key: string) => {
     setApiKey(key);
-    localStorage.setItem('gemini_api_key', key);
+    localStorage.setItem("gemini_api_key", key);
     setShowSettings(false);
   };
 
   const deleteApiKey = () => {
-    setApiKey('');
-    localStorage.removeItem('gemini_api_key');
+    setApiKey("");
+    localStorage.removeItem("gemini_api_key");
     setShowSettings(false);
   };
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
@@ -51,7 +51,9 @@ export const AIChat: React.FC = () => {
   useEffect(() => {
     if (isOpen && messages.length === 1) {
       // Only speak if there's just the welcome message
-      const welcomeMessage = messages[0]?.content || "Hi ! I'm Aurora, your AI Coffee Guide. Tell me what flavors you like, or ask for a recommendation based on your mood!";
+      const welcomeMessage =
+        messages[0]?.content ||
+        "Hi ! I'm Aurora, your AI Coffee Guide. Tell me what flavors you like, or ask for a recommendation based on your mood!";
       setTimeout(() => {
         speakResponse(welcomeMessage);
       }, 300); // Small delay for smooth UX
@@ -63,9 +65,10 @@ export const AIChat: React.FC = () => {
     setInput(text);
   };
 
-  const { isListening, isSupported, startListening, stopListening } = useSpeechToText({
-    onResult: handleSpeechResult
-  });
+  const { isListening, isSupported, startListening, stopListening } =
+    useSpeechToText({
+      onResult: handleSpeechResult,
+    });
 
   // Text to Speech
   const speakResponse = (text: string) => {
@@ -73,14 +76,18 @@ export const AIChat: React.FC = () => {
     window.speechSynthesis.cancel();
 
     // Strip markdown characters for cleaner speech
-    const cleanText = text.replace(/[*#_`]/g, '');
+    const cleanText = text.replace(/[*#_`]/g, "");
 
     const utterance = new SpeechSynthesisUtterance(cleanText);
     // Try to select a pleasant voice if available
     const voices = window.speechSynthesis.getVoices();
-    const preferredVoice = voices.find(voice => voice.name.includes('Google US English') || voice.name.includes('Samantha'));
+    const preferredVoice = voices.find(
+      (voice) =>
+        voice.name.includes("Google US English") ||
+        voice.name.includes("Samantha")
+    );
     if (preferredVoice) utterance.voice = preferredVoice;
-    
+
     utterance.rate = 1;
     utterance.pitch = 1;
     window.speechSynthesis.speak(utterance);
@@ -90,15 +97,17 @@ export const AIChat: React.FC = () => {
     useChatStore.getState().clearChat();
     setSuggestedItem(null);
     // Speak the welcome message
-    speakResponse("Hi ! I'm Aurora, your AI Coffee Guide. Tell me what flavors you like, or ask for a recommendation based on your mood!");
+    speakResponse(
+      "Hi ! I'm Aurora, your AI Coffee Guide. Tell me what flavors you like, or ask for a recommendation based on your mood!"
+    );
   };
 
-  const handleSuggestionResponse = (response: 'yes' | 'no') => {
+  const handleSuggestionResponse = (response: "yes" | "no") => {
     if (!suggestedItem) return;
 
-    if (response === 'yes') {
+    if (response === "yes") {
       const msg = `Yes, please add the ${suggestedItem.name} to my cart.`;
-      addMessage({ role: 'user', content: msg });
+      addMessage({ role: "user", content: msg });
       processUserMessage(msg);
     } else {
       setSuggestedItem(null);
@@ -111,9 +120,16 @@ export const AIChat: React.FC = () => {
     setIsTyping(true);
     try {
       // Detailed menu context
-      const menuDetails = products.map(p => 
-        `- ${p.name} (${p.category}): ${p.description}. Ingredients: ${p.ingredients.map(i => i.name).join(', ')}. Price: $${p.price}`
-      ).join('\n');
+      const menuDetails = products
+        .map(
+          (p) =>
+            `- ${p.name} (${p.category}): ${
+              p.description
+            }. Ingredients: ${p.ingredients
+              .map((i) => i.name)
+              .join(", ")}. Price: $${p.price}`
+        )
+        .join("\n");
 
       // Context for the AI
       const context = `
@@ -134,20 +150,25 @@ export const AIChat: React.FC = () => {
         User has ${items.length} items in cart.
       `;
 
-      const rawResponse = await chatWithGemini(`${context}\n\nUser: ${message}`, apiKey);
-      
+      const rawResponse = await chatWithGemini(
+        `${context}\n\nUser: ${message}`,
+        apiKey
+      );
+
       // Parse tags
       let cleanResponse = rawResponse;
-      
+
       // Handle Recommendation Tag [REC: Item Name]
       const recMatch = rawResponse.match(/\[REC:\s*(.*?)\]/);
       if (recMatch) {
         const itemName = recMatch[1].trim();
         setSearchQuery(itemName); // Filter menu
-        cleanResponse = cleanResponse.replace(recMatch[0], '');
-        
+        cleanResponse = cleanResponse.replace(recMatch[0], "");
+
         // Find product for suggestion state
-        const product = products.find(p => p.name.toLowerCase() === itemName.toLowerCase());
+        const product = products.find(
+          (p) => p.name.toLowerCase() === itemName.toLowerCase()
+        );
         if (product) {
           setSuggestedItem(product);
         }
@@ -157,28 +178,35 @@ export const AIChat: React.FC = () => {
       const addMatch = rawResponse.match(/\[ADD:\s*(.*?)\]/);
       if (addMatch) {
         const itemName = addMatch[1].trim();
-        const product = products.find(p => p.name.toLowerCase() === itemName.toLowerCase());
+        const product = products.find(
+          (p) => p.name.toLowerCase() === itemName.toLowerCase()
+        );
         if (product) {
-          addItem(product, 'M');
-          cleanResponse = cleanResponse.replace(addMatch[0], '');
+          addItem(product, "M");
+          cleanResponse = cleanResponse.replace(addMatch[0], "");
         } else {
-           // Fallback if exact match fails, try partial
-           const partialProduct = products.find(p => p.name.toLowerCase().includes(itemName.toLowerCase()));
-           if (partialProduct) {
-             addItem(partialProduct, 'M');
-             cleanResponse = cleanResponse.replace(addMatch[0], '');
-           }
+          // Fallback if exact match fails, try partial
+          const partialProduct = products.find((p) =>
+            p.name.toLowerCase().includes(itemName.toLowerCase())
+          );
+          if (partialProduct) {
+            addItem(partialProduct, "M");
+            cleanResponse = cleanResponse.replace(addMatch[0], "");
+          }
         }
         // Clear suggestion if we just added it
         setSuggestedItem(null);
       }
 
-      addMessage({ role: 'assistant', content: cleanResponse.trim() });
+      addMessage({ role: "assistant", content: cleanResponse.trim() });
       speakResponse(cleanResponse.trim());
-
     } catch (error) {
       console.error(error);
-      addMessage({ role: 'assistant', content: "I'm having trouble connecting to the neural network. Please check your connection." });
+      addMessage({
+        role: "assistant",
+        content:
+          "I'm having trouble connecting to the neural network. Please check your connection.",
+      });
     } finally {
       setIsTyping(false);
     }
@@ -189,8 +217,8 @@ export const AIChat: React.FC = () => {
     if (!input.trim()) return;
 
     const userMessage = input;
-    setInput('');
-    addMessage({ role: 'user', content: userMessage });
+    setInput("");
+    addMessage({ role: "user", content: userMessage });
     processUserMessage(userMessage);
   };
 
@@ -202,7 +230,7 @@ export const AIChat: React.FC = () => {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 20, scale: 0.95 }}
           transition={{ duration: 0.2 }}
-          className="fixed bottom-24 right-6 w-[90vw] md:w-[450px] h-[550px] max-h-[80vh] bg-white/60 dark:bg-black/60 backdrop-blur-2xl border border-white/20 shadow-2xl rounded-3xl overflow-hidden z-100 flex flex-col"
+          className="fixed bottom-24 right-4 md:right-6 w-[calc(100vw-2rem)] md:w-[450px] h-[600px] max-h-[80vh] bg-white/60 dark:bg-black/60 backdrop-blur-2xl border border-white/20 shadow-2xl rounded-3xl overflow-hidden z-100 flex flex-col"
         >
           {/* Header */}
           <div className="p-4 bg-linear-to-r from-orange-500/80 to-amber-600/80 backdrop-blur-md flex items-center justify-between shrink-0 shadow-lg z-10">
@@ -211,26 +239,34 @@ export const AIChat: React.FC = () => {
                 <Bot className="w-6 h-6" />
               </div>
               <div>
-                <h3 className="font-bold text-lg leading-tight">Aurora Assistant</h3>
-                <p className="text-xs text-white/80 font-medium">Powered by Gemini AI</p>
+                <h3 className="font-bold text-lg leading-tight">
+                  Aurora Assistant
+                </h3>
+                <p className="text-xs text-white/80 font-medium">
+                  Powered by Gemini AI
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-1">
-               <button
+              <button
                 onClick={handleClearChat}
                 className="p-2 rounded-full text-white/70 hover:bg-white/10 hover:text-white transition-colors"
                 title="Clear Chat"
               >
                 <Trash2 className="w-5 h-5" />
               </button>
-               <button
+              <button
                 onClick={() => setShowSettings(!showSettings)}
-                className={`p-2 rounded-full transition-colors ${showSettings ? 'bg-white/20 text-white' : 'text-white/70 hover:bg-white/10'}`}
+                className={`p-2 rounded-full transition-colors ${
+                  showSettings
+                    ? "bg-white/20 text-white"
+                    : "text-white/70 hover:bg-white/10"
+                }`}
                 title="Settings"
               >
                 <Settings className="w-5 h-5" />
               </button>
-              <button 
+              <button
                 onClick={toggleChat}
                 className="text-white/70 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-full ml-1"
               >
@@ -244,7 +280,7 @@ export const AIChat: React.FC = () => {
             {showSettings && (
               <motion.div
                 initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
+                animate={{ height: "auto", opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
                 className="bg-gray-100/90 dark:bg-gray-900/90 border-b border-gray-200 dark:border-gray-700 overflow-hidden shrink-0"
               >
@@ -260,22 +296,22 @@ export const AIChat: React.FC = () => {
                         value={apiKey}
                         onChange={(e) => setApiKey(e.target.value)}
                         placeholder="Enter your API key..."
-                        className="w-full pl-9 pr-4 py-2 rounded-xl bg-white dark:bg-black border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-orange-500 outline-none text-sm"
+                        className="w-full pl-9 pr-4 py-3 md:py-2 rounded-xl bg-white dark:bg-black border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-orange-500 outline-none text-base md:text-sm"
                       />
                     </div>
                     <button
                       onClick={() => saveApiKey(apiKey)}
-                      className="px-4 py-2 bg-orange-500 text-white rounded-xl text-sm font-medium hover:bg-orange-600 transition-colors"
+                      className="px-5 py-3 md:px-4 md:py-2 bg-orange-500 text-white rounded-xl text-base md:text-sm font-medium hover:bg-orange-600 transition-colors"
                     >
                       Save
                     </button>
                     {apiKey && (
                       <button
                         onClick={deleteApiKey}
-                        className="px-3 py-2 bg-red-500 text-white rounded-xl text-sm font-medium hover:bg-red-600 transition-colors"
+                        className="px-4 py-3 md:px-3 md:py-2 bg-red-500 text-white rounded-xl text-base md:text-sm font-medium hover:bg-red-600 transition-colors"
                         title="Delete API Key"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="w-5 h-5 md:w-4 md:h-4" />
                       </button>
                     )}
                   </div>
@@ -294,13 +330,15 @@ export const AIChat: React.FC = () => {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 key={msg.id}
-                className={`flex ${msg.role === 'assistant' ? 'justify-start' : 'justify-end'}`}
+                className={`flex ${
+                  msg.role === "assistant" ? "justify-start" : "justify-end"
+                }`}
               >
                 <div
                   className={`max-w-[85%] p-4 rounded-2xl text-sm leading-relaxed shadow-sm backdrop-blur-sm ${
-                    msg.role === 'assistant'
-                      ? 'bg-white/80 dark:bg-gray-800/80 text-gray-800 dark:text-gray-100 rounded-tl-none border border-gray-200/50 dark:border-gray-700/50'
-                      : 'bg-linear-to-br from-orange-500 to-amber-600 text-white rounded-tr-none shadow-orange-500/20'
+                    msg.role === "assistant"
+                      ? "bg-white/80 dark:bg-gray-800/80 text-gray-800 dark:text-gray-100 rounded-tl-none border border-gray-200/50 dark:border-gray-700/50"
+                      : "bg-linear-to-br from-orange-500 to-amber-600 text-white rounded-tr-none shadow-orange-500/20"
                   }`}
                 >
                   {msg.content}
@@ -310,9 +348,18 @@ export const AIChat: React.FC = () => {
             {isTyping && (
               <div className="flex justify-start">
                 <div className="bg-white/80 dark:bg-gray-800/80 p-4 rounded-2xl rounded-tl-none flex gap-2 border border-gray-200/50 dark:border-gray-700/50 shadow-sm backdrop-blur-sm">
-                  <span className="w-2 h-2 bg-orange-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                  <span className="w-2 h-2 bg-orange-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                  <span className="w-2 h-2 bg-orange-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                  <span
+                    className="w-2 h-2 bg-orange-500 rounded-full animate-bounce"
+                    style={{ animationDelay: "0ms" }}
+                  />
+                  <span
+                    className="w-2 h-2 bg-orange-500 rounded-full animate-bounce"
+                    style={{ animationDelay: "150ms" }}
+                  />
+                  <span
+                    className="w-2 h-2 bg-orange-500 rounded-full animate-bounce"
+                    style={{ animationDelay: "300ms" }}
+                  />
                 </div>
               </div>
             )}
@@ -329,13 +376,13 @@ export const AIChat: React.FC = () => {
                 className="px-4 pb-2 flex gap-2 justify-end"
               >
                 <button
-                  onClick={() => handleSuggestionResponse('no')}
+                  onClick={() => handleSuggestionResponse("no")}
                   className="px-4 py-2 bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-xl text-sm font-medium hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors"
                 >
                   No thanks
                 </button>
                 <button
-                  onClick={() => handleSuggestionResponse('yes')}
+                  onClick={() => handleSuggestionResponse("yes")}
                   className="px-4 py-2 bg-orange-500 text-white rounded-xl text-sm font-medium hover:bg-orange-600 transition-colors shadow-lg shadow-orange-500/20"
                 >
                   Yes, add it
@@ -345,7 +392,10 @@ export const AIChat: React.FC = () => {
           </AnimatePresence>
 
           {/* Input */}
-          <form onSubmit={handleSubmit} className="p-4 border-t border-gray-200/50 dark:border-gray-700/50 bg-white/60 dark:bg-black/60 backdrop-blur-xl shrink-0">
+          <form
+            onSubmit={handleSubmit}
+            className="p-4 border-t border-gray-200/50 dark:border-gray-700/50 bg-white/60 dark:bg-black/60 backdrop-blur-xl shrink-0"
+          >
             <div className="flex gap-2 items-end">
               <div className="flex-1 bg-gray-100/80 dark:bg-gray-800/80 rounded-2xl border border-gray-200/50 dark:border-gray-700/50 focus-within:ring-2 focus-within:ring-orange-500/50 focus-within:border-orange-500/50 transition-all flex items-center">
                 <input
@@ -360,9 +410,9 @@ export const AIChat: React.FC = () => {
                     type="button"
                     onClick={isListening ? stopListening : startListening}
                     className={`p-2 mr-2 rounded-xl transition-all ${
-                      isListening 
-                        ? 'bg-red-500 text-white animate-pulse' 
-                        : 'text-gray-400 hover:text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/20'
+                      isListening
+                        ? "bg-red-500 text-white animate-pulse"
+                        : "text-gray-400 hover:text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/20"
                     }`}
                   >
                     <Mic className="w-5 h-5" />
